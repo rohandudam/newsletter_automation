@@ -1,9 +1,11 @@
 #Flask Form To add Data
 from flask_wtf import FlaskForm
-from wtforms import TextField, TextAreaField, SubmitField
-from wtforms.validators import DataRequired, Length
+from wtforms import TextField, TextAreaField, SubmitField, TimeField
+from wtforms.fields.core import Label, StringField
+from wtforms.validators import DataRequired, Length,ValidationError
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from . models import Article_category
+from datetime import datetime
 
 #Check for fields not empty
 def length_check(form,field):
@@ -16,9 +18,10 @@ def choice_query():
 
 #To add articles data
 class AddArticlesForm(FlaskForm):
-    url= TextField('url', validators= [DataRequired()])
-    title = TextField('title', validators= [DataRequired()])
-    description = TextField('description', validators= [ DataRequired(), Length(min=4)])
-    time = TextField('time',validators=[ DataRequired()])
+    url = StringField(label=('URL: '), validators=[DataRequired()])
+    #url= TextField(label=('url'), validators= [DataRequired()])
+    title = TextField(label=('Title: '), validators= [DataRequired()])
+    description = TextAreaField(label=('Description: '), validators= [ DataRequired(), Length(max=100)])
+    time = TimeField(label=('Time: '),format='%H:%M', default=datetime.now(), validators=[ DataRequired()])
     category_id = QuerySelectField(query_factory=choice_query, allow_blank=True,get_label='category_name')
     submit = SubmitField('Add Article')

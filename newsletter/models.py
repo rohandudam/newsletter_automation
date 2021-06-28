@@ -3,6 +3,7 @@ Models for the Newsletter Automation app
 """
 
 from newsletter import db
+from sqlalchemy.dialects.mysql import TIME
 
 class AddNewsletter(db.Model):
     "Class for AddNewsletter db model"
@@ -36,7 +37,8 @@ class Articles(db.Model):
     url = db.Column(db.String(100))
     title = db.Column(db.String(250))
     description = db.Column(db.String(500))
-    time = db.Column(db.String(300))
+    #time = db.Column(db.String(300))
+    time = db.Column(TIME, nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('article_category.category_id'))
 
     def __init__(self, url, title, description, time,category_id):
