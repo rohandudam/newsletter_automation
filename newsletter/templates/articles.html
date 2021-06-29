@@ -33,7 +33,12 @@
         {{addarticlesform.category_id.label}}
         <div class="form-group col-md-6">{{ addarticlesform.category_id(id="category_id", class="form-control", required="") }}
         </div>
+        <div class = "button">
         <br>{{ addarticlesform.submit(class="btn btn-lg btn-primary btn-block")}}
+        {{addarticlesform.view(class="btn btn-lg button")}}
+        {{addarticlesform.edit(class="btn btn-lg button")}}
+        {{addarticlesform.delete(class="btn btn-lg button")}}
+        </div>
 </form>
 </hr>
 </body>

@@ -25,3 +25,6 @@ class AddArticlesForm(FlaskForm):
     time = TimeField(label=('Time: '),format='%H:%M', default=datetime.now(), validators=[ DataRequired()])
     category_id = QuerySelectField(query_factory=choice_query, allow_blank=True,get_label='category_name')
     submit = SubmitField('Add Article')
+    view = SubmitField('View')
+    edit = SubmitField('Edit')
+    delete = SubmitField('Delete')
