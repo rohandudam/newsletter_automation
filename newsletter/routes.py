@@ -41,11 +41,14 @@ def Add_articles():
 
     if form.validate_on_submit():
         if form.add_more.data:
-            category = form.category_id.data.category_id
+            if form.category_id.data is None:
+                flash('Please select Category')
+                return redirect(url_for("Add_articles"))
+            category = form.category_id.data
             article_id = form.url.data
             title = form.title.data
-            if form.category_id.data=="Select Category":
-                flash('Please select category')
+            if article_id=="Select URL":
+                flash('Please select URL')
                 return redirect(url_for("Add_articles"))
             else:
                 if article_id not in article_id_list:
@@ -151,7 +154,7 @@ def reading_time(article_id):
 
 @app.route("/title/<article_id>")
 def title(article_id):
-    "This article fetched reading time based on url selected"
+    "This method fetched reading time based on url selected"
 
     title = Articles.query.filter_by(article_id=article_id).all()
     TitleArray = []

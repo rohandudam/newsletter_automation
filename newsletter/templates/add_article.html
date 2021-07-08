@@ -1,7 +1,11 @@
 
 {%extends "layout.html" %}
 {% block content %}
-
+{% for field, errors in form.errors.items() %}
+<small class="form-text text-muted ">
+    {{ ', '.join(errors) }}
+</small>
+{% endfor %}
 <div class="jumbotron p-3">
     <span style="float: right">
 
