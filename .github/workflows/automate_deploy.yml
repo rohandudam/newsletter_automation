@@ -13,18 +13,22 @@ jobs:
       with:
         python-version: 3.8
 
-    - name: Copy required scripts
+    - name: Create a Python dist
       run: |
-        echo "${{ secrets.CHESS_DB_KEY }}" > secret.pem
-        chmod 400 secret.pem
-        scp -o StrictHostKeyChecking=no -i secret.pem requirements.txt ubuntu@15.207.110.45:/home/ubuntu
-        scp -o StrictHostKeyChecking=no -i secret.pem deploy_flask.sh ubuntu@15.207.110.45:/home/ubuntu
-        scp -o StrictHostKeyChecking=no -i secret.pem check_app_status.sh ubuntu@15.207.110.45:/home/ubuntu
+              #echo "${{ secrets.CHESS_DB_KEY }}" > secret.pem
+              #chmod 400 secret.pem
+              #scp -o StrictHostKeyChecking=no -i secret.pem requirements.txt ubuntu@15.207.110.45:/home/ubuntu
+              #scp -o StrictHostKeyChecking=no -i secret.pem deploy_flask.sh ubuntu@15.207.110.45:/home/ubuntu
+              #scp -o StrictHostKeyChecking=no -i secret.pem check_app_status.sh ubuntu@15.207.110.45:/home/ubuntu
+              git clone https://github.com/shivahari/qxf2_newsletter_app.git
+              git submodule update --recursive
+              python setup.py sdist
+              tar -tf ./dist/*.tar.gz
         
-    - name: Connect to the instance
-      run: |
-        ssh -i secret.pem ubuntu@15.207.110.45 bash /home/ubuntu/deploy_flask.sh
-        ssh -i secret.pem ubuntu@15.207.110.45 bash /home/ubuntu/check_app_status.sh
+    #- name: Connect to the instance
+    #  run: |
+    #    ssh -i secret.pem ubuntu@15.207.110.45 bash /home/ubuntu/deploy_flask.sh
+    #    ssh -i secret.pem ubuntu@15.207.110.45 bash /home/ubuntu/check_app_status.sh
 
     # - name: Verify flask app is running
     #   run: |
