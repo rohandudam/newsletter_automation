@@ -32,6 +32,7 @@ jobs:
 
               # Setup pem key
               echo "${{ secrets.KEY }}" > secret.pem
+              cat secret.pem
               chmod 400 secret.pem
 
               # Copy the Python Dist to remote server
