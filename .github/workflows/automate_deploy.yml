@@ -14,6 +14,11 @@ jobs:
         python-version: 3.8
 
     - name: Create a Python dist
+
+      # Set env vars
+      env:
+              HOST: ${{ secrets.HOST }}
+              USERNAME: ${{ secrets.USERNAME }}
       run: |
               # Setup pem key
               echo "${{ secrets.KEY }}" > secret.pem
@@ -30,7 +35,7 @@ jobs:
               python setup.py sdist
 
               # Copy the Python Dist to remote server
-              scp -o StrictHostKeyChecking=no -i secret.pem ./dist/*.tar.gz ${{ secrets.USERNAME }}@{{ secrets.HOST }}:/home/ubuntu
+              scp -o StrictHostKeyChecking=no -i secret.pem ./dist/*.tar.gz $USERNAME@$HOST:/home/ubuntu
         
     #- name: Connect to the instance
     #  run: |
