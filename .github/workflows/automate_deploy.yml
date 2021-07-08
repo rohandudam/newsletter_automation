@@ -7,7 +7,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+            #- uses: actions/checkout@v2
     - name: Set up Python 3.8
       uses: actions/setup-python@v1
       with:
@@ -24,6 +24,7 @@ jobs:
               ls
               cd ./qxf2_newsletter_app
               git submodule update --recursive
+              ls
               python setup.py sdist
               tar -tf ./dist/*.tar.gz
         
