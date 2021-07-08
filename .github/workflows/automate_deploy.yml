@@ -19,10 +19,9 @@ jobs:
       env:
               HOST: ${{ secrets.HOST }}
               USERNAME: ${{ secrets.USERNAME }}
-              KEY: ${{ secrets.KEY }}
       run: |
               # Setup pem key
-              echo "${KEY}" > secret.pem
+              echo "${{ secrets.KEY }}" > secret.pem
               chmod 400 secret.pem
 
               # Clone the Python Dist repo
