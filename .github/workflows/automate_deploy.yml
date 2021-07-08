@@ -20,13 +20,19 @@ jobs:
               #scp -o StrictHostKeyChecking=no -i secret.pem requirements.txt ubuntu@15.207.110.45:/home/ubuntu
               #scp -o StrictHostKeyChecking=no -i secret.pem deploy_flask.sh ubuntu@15.207.110.45:/home/ubuntu
               #scp -o StrictHostKeyChecking=no -i secret.pem check_app_status.sh ubuntu@15.207.110.45:/home/ubuntu
+
+              # Clone the Python Dist repo
               git clone https://github.com/shivahari/qxf2_newsletter_app.git
-              ls
+
+              # Update the newsletter_automation submodule
               cd ./qxf2_newsletter_app
               git submodule update --recursive
-              ls
+
+              # Create a Python Dist
               python setup.py sdist
-              tar -tf ./dist/*.tar.gz
+
+              # Copy the Python Dist to remote server
+              scp -o StrictHostKeyChecking=no -i secret.pem ./dist/*.tar.gz ubuntu@15.207.110.45:/home/ubuntu
         
     #- name: Connect to the instance
     #  run: |
