@@ -20,10 +20,6 @@ jobs:
               HOST: ${{ secrets.HOST }}
               USERNAME: ${{ secrets.USERNAME }}
       run: |
-              # Setup pem key
-              echo "${{ secrets.KEY }}" > secret.pem
-              chmod 400 secret.pem
-
               # Clone the Python Dist repo
               git clone https://github.com/shivahari/qxf2_newsletter_app.git
 
@@ -34,8 +30,12 @@ jobs:
               # Create a Python Dist
               python setup.py sdist
 
+              # Setup pem key
+              echo "${{ secrets.KEY }}" > secret.pem
+              chmod 400 secret.pem
+
               # Copy the Python Dist to remote server
-              scp -o StrictHostKeyChecking=no -i ../secret.pem ./dist/*.tar.gz "$USERNAME"@"$HOST":/home/ubuntu
+              scp -o StrictHostKeyChecking=no -i secret.pem ./dist/*.tar.gz "$USERNAME"@"$HOST":/home/ubuntu
         
     #- name: Connect to the instance
     #  run: |
