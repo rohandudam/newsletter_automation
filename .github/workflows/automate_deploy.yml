@@ -15,11 +15,9 @@ jobs:
 
     - name: Create a Python dist
       run: |
-              echo "${{ secrets.CHESS_DB_KEY }}" > secret.pem
+              # Setup pem key
+              echo "${{ secrets.KEY }}" > secret.pem
               chmod 400 secret.pem
-              #scp -o StrictHostKeyChecking=no -i secret.pem requirements.txt ubuntu@15.207.110.45:/home/ubuntu
-              #scp -o StrictHostKeyChecking=no -i secret.pem deploy_flask.sh ubuntu@15.207.110.45:/home/ubuntu
-              #scp -o StrictHostKeyChecking=no -i secret.pem check_app_status.sh ubuntu@15.207.110.45:/home/ubuntu
 
               # Clone the Python Dist repo
               git clone https://github.com/shivahari/qxf2_newsletter_app.git
@@ -32,7 +30,7 @@ jobs:
               python setup.py sdist
 
               # Copy the Python Dist to remote server
-              scp -o StrictHostKeyChecking=no -i secret.pem ./dist/*.tar.gz ubuntu@15.207.110.45:/home/ubuntu
+              scp -o StrictHostKeyChecking=no -i secret.pem ./dist/*.tar.gz ${{ secrets.USERNAME }}@{{ secrets.HOST }}:/home/ubuntu
         
     #- name: Connect to the instance
     #  run: |
