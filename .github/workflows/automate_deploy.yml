@@ -29,14 +29,24 @@ jobs:
 
               # Create a Python Dist
               python setup.py sdist
+        
+    - name: copy file via ssh key
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        port: 22
+        key: ${{ secrets.KEY }}
+        source: "./qxf2_newsletter_app/dist/*.tar.gz"
+        target: "/home/ubuntu"
 
-              # Setup pem key
-              echo "${{ secrets.KEY }}" > secret.pem
-              cat secret.pem
-              chmod 400 secret.pem
+    #          # Setup pem key
+    #          echo "${{ secrets.KEY }}" > secret.pem
+    #          cat secret.pem
+    #          chmod 400 secret.pem
 
-              # Copy the Python Dist to remote server
-              scp -o StrictHostKeyChecking=no -i secret.pem ./dist/*.tar.gz "$USERNAME"@"$HOST":/home/ubuntu
+    #          # Copy the Python Dist to remote server
+    #          scp -o StrictHostKeyChecking=no -i secret.pem ./dist/*.tar.gz "$USERNAME"@"$HOST":/home/ubuntu
         
     #- name: Connect to the instance
     #  run: |
