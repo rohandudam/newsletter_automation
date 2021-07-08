@@ -19,9 +19,7 @@ jobs:
       env:
               HOST: ${{ secrets.HOST }}
               USERNAME: ${{ secrets.USERNAME }}
-              WORKING_DIR: `pwd`
       run: |
-              echo $WORKING_DIR
               # Clone the Python Dist repo
               git clone https://github.com/shivahari/qxf2_newsletter_app.git
 
@@ -31,6 +29,9 @@ jobs:
 
               # Create a Python Dist
               python setup.py sdist
+
+              # Set cwd as Working dir
+              echo "WORK_DIR=`pwd`" >> $GITHUB_ENV
         
     - name: copy file via ssh key
       uses: appleboy/scp-action@master
@@ -39,7 +40,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         port: 22
         key: ${{ secrets.KEY }}
-        source: "dist/*.tar.gz"
+        source: "${{ env.WORK_DIR }}/dist/*.tar.gz"
         target: "/home/ubuntu"
 
     #          # Setup pem key
