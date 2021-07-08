@@ -37,6 +37,7 @@ jobs:
       run: |
               echo "${{ env.WORK_DIR }}"
               ls "${{ env.WORK_DIR }}"/dist/
+              ping -c 1 "${{ secrets.HOST }}"
 
     - name: copy file via ssh key
       uses: appleboy/scp-action@master
