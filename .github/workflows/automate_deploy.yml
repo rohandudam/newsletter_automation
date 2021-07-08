@@ -37,7 +37,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         port: 22
         key: ${{ secrets.KEY }}
-        source: "./qxf2_newsletter_app/dist/*.tar.gz"
+        source: "dist/*.tar.gz"
         target: "/home/ubuntu"
 
     #          # Setup pem key
