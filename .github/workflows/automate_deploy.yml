@@ -15,8 +15,8 @@ jobs:
 
     - name: Create a Python dist
       run: |
-              #echo "${{ secrets.CHESS_DB_KEY }}" > secret.pem
-              #chmod 400 secret.pem
+              echo "${{ secrets.CHESS_DB_KEY }}" > secret.pem
+              chmod 400 secret.pem
               #scp -o StrictHostKeyChecking=no -i secret.pem requirements.txt ubuntu@15.207.110.45:/home/ubuntu
               #scp -o StrictHostKeyChecking=no -i secret.pem deploy_flask.sh ubuntu@15.207.110.45:/home/ubuntu
               #scp -o StrictHostKeyChecking=no -i secret.pem check_app_status.sh ubuntu@15.207.110.45:/home/ubuntu
