@@ -19,9 +19,10 @@ jobs:
       env:
               HOST: ${{ secrets.HOST }}
               USERNAME: ${{ secrets.USERNAME }}
+              KEY: ${{ secrets.KEY }}
       run: |
               # Setup pem key
-              echo "${{ secrets.KEY }}" > secret.pem
+              echo "${KEY}" > secret.pem
               chmod 400 secret.pem
 
               # Clone the Python Dist repo
@@ -35,7 +36,7 @@ jobs:
               python setup.py sdist
 
               # Copy the Python Dist to remote server
-              scp -o StrictHostKeyChecking=no -i secret.pem ./dist/*.tar.gz $USERNAME@$HOST:/home/ubuntu
+              scp -o StrictHostKeyChecking=no -i secret.pem ./dist/*.tar.gz "$USERNAME"@"$HOST":/home/ubuntu
         
     #- name: Connect to the instance
     #  run: |
