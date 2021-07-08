@@ -34,6 +34,7 @@ jobs:
               echo "WORK_DIR=`pwd`" >> $GITHUB_ENV
         
     - name: copy file via ssh key
+      run: echo "${{ env.WORK_DIR }}"
       uses: appleboy/scp-action@master
       with:
         host: ${{ secrets.HOST }}
