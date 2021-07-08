@@ -19,7 +19,9 @@ jobs:
       env:
               HOST: ${{ secrets.HOST }}
               USERNAME: ${{ secrets.USERNAME }}
+              WORKING_DIR: `pwd`
       run: |
+              echo $WORKING_DIR
               # Clone the Python Dist repo
               git clone https://github.com/shivahari/qxf2_newsletter_app.git
 
