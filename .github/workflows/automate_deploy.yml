@@ -36,7 +36,7 @@ jobs:
               chmod 400 secret.pem
 
               # Copy the Python Dist to the remote server
-              scp -o StrictHostKeyChecking=no -i secret.pem ./dist/*.tar.gz "$USERNAME"@"$HOST":/home/ubuntu
+              scp -o StrictHostKeyChecking=no -i secret.pem ./dist/*.tar.gz $USERNAME@$HOST:/home/ubuntu
 
     #          # Setup pem key
     #          echo "${{ secrets.KEY }}" > secret.pem
