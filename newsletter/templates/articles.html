@@ -5,6 +5,7 @@
      <title>Newsletter articles"</title>
 </head>
 <body>
+	{% include 'header.html' %}
 <h2>Add <b>Articles </b> <span style="float: right">
    <form action="manage-articles">
       <button type="submit">Manage Articles</button>
@@ -18,7 +19,7 @@
          {{ addarticlesform.description(id="description", class="form-control", autofocus="",placeholder="Description")}}
          {{ addarticlesform.time(placeholder="Time",id="time", class="form-control", autofocus="") }}
          {{ addarticlesform.category_id(placeholder="category",id="category_id", class="form-control", required="") }}
-         {{ addarticlesform.submit(class="btn btn-lg btn-primary btn-block")}}
+         {{ addarticlesform.submit(class="button  btn btn-success btn-lg")}}
 </form>
 </body>
 </html>
