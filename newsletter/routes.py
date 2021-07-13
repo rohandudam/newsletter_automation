@@ -1,5 +1,4 @@
 #Endpoints to different Pages/Endpoints
-from flask import Flask
 from flask import Flask, request, flash, url_for, redirect, render_template, jsonify
 from sqlalchemy.orm import query
 from . models import Articles, db, Article_category, AddNewsletter, NewsletterContent
@@ -7,6 +6,7 @@ from . forms import AddArticlesForm
 from newsletter import app
 from . create_newsletter_form import ArticleForm
 from . edit_article_form import EditArticlesForm
+from . login_form import LoginForm
 
 articles_added=[]
 article_id_list=[]
@@ -14,6 +14,11 @@ article_id_list=[]
 @app.route('/')
 def index():
     return render_template('home.html')
+
+@app.route('/login',methods=['GET', 'POST'])
+def login():
+    loginform = LoginForm(request.form)    
+    return render_template('login.html',form=loginform)
 
 @app.route('/articles', methods=['GET', 'POST'])
 def articles():
