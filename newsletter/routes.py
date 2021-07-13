@@ -17,8 +17,14 @@ def index():
 
 @app.route('/login',methods=['GET', 'POST'])
 def login():
-    loginform = LoginForm(request.form)    
-    return render_template('login.html',form=loginform)
+    """
+    Log-in page for registered users.
+    GET requests serve Log-in page.
+    POST requests validate and redirect user to index.
+    """
+    loginform = LoginForm(request.form)
+        
+    return render_template('login.html', title='Log in.', form=loginform)
 
 @app.route('/articles', methods=['GET', 'POST'])
 def articles():
