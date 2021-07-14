@@ -24,8 +24,8 @@ jobs:
               git clone https://github.com/shivahari/qxf2_newsletter_app.git
 
               # Update the newsletter_automation submodule
-              cd ./qxf2_newsletter_app
-              git submodule update --recursive
+              cd ./qxf2_newsletter_app/newsletter_automation
+              git pull --recurse-submodules && cd ..
 
               # Create a Python Dist
               python setup.py sdist
