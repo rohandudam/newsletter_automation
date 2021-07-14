@@ -23,23 +23,23 @@ jobs:
               # Update the newsletter_automation submodule
               cd ./qxf2_newsletter_app
               git pull --recurse-submodules
-              ls -alh
+              ls -alh ./newsletter_automation
               cat MANIFEST.in
 
               # Create a Python Dist
               pwd
               python --version
-              python setup.py sdist
+              python ./setup.py sdist
               tar -tf ./dist/*.tar.gz
-              python -m pip install ./dist/*.tar.gz
+              #python -m pip install ./dist/*.tar.gz
 
               # Setup pem key
-              echo "${{ secrets.KEY }}" > secret.pem
-              cat secret.pem
-              chmod 400 secret.pem
+              #echo "${{ secrets.KEY }}" > secret.pem
+              #cat secret.pem
+              #chmod 400 secret.pem
 
               # Copy the Python Dist to the remote server
-              scp -o StrictHostKeyChecking=no -i secret.pem ./dist/*.tar.gz ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/ubuntu
+              #scp -o StrictHostKeyChecking=no -i secret.pem ./dist/*.tar.gz ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/ubuntu
 
     #          # Setup pem key
     #          echo "${{ secrets.KEY }}" > secret.pem
