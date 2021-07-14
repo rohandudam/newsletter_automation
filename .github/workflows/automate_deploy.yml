@@ -26,6 +26,7 @@ jobs:
               cat MANIFEST.in
 
               # Create a Python Dist
+              cd ~
               pwd
               python --version
               python setup.py sdist
