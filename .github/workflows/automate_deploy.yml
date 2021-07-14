@@ -15,17 +15,14 @@ jobs:
 
     - name: Create a Python dist & copy it to remote server
 
-      # Set env vars
-      #env:
-      #        HOST: ${{ secrets.HOST }}
-      #        USERNAME: ${{ secrets.USERNAME }}
       run: |
               # Clone the Python Dist repo
               git clone https://github.com/shivahari/qxf2_newsletter_app.git
 
               # Update the newsletter_automation submodule
-              cd ./qxf2_newsletter_app/newsletter_automation
-              git pull --recurse-submodules && cd ..
+              cd ./qxf2_newsletter_app
+              git pull --recurse-submodules
+              ls
 
               # Create a Python Dist
               python setup.py sdist
