@@ -22,11 +22,14 @@ jobs:
               # Update the newsletter_automation submodule
               cd ./qxf2_newsletter_app
               git pull --recurse-submodules
-              ls
+              ls -alh
+              cat MANIFEST.in
 
               # Create a Python Dist
               python --version
               python setup.py sdist
+              tar -tf ./dist/*.tar.gz
+              python -m pip install ./dist/*.tar.gz
 
               # Setup pem key
               echo "${{ secrets.KEY }}" > secret.pem
