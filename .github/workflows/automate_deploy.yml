@@ -25,6 +25,7 @@ jobs:
               ls
 
               # Create a Python Dist
+              python --version
               python setup.py sdist
 
               # Setup pem key
