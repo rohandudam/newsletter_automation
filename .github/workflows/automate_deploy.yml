@@ -26,6 +26,7 @@ jobs:
               cat MANIFEST.in
 
               # Create a Python Dist
+              pwd
               python --version
               python setup.py sdist
               tar -tf ./dist/*.tar.gz
