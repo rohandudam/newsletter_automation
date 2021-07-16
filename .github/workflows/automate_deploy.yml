@@ -7,69 +7,27 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-            #- uses: actions/checkout@v2
+    - uses: actions/checkout@v2
     - name: Set up Python 3.8
       uses: actions/setup-python@v1
       with:
         python-version: 3.8
-
-    - name: Create a Python dist & copy it to remote server
-
+    
+    - name: Create a python dist
       run: |
-              # Clone the Python Dist repo
-              git clone https://github.com/shivahari/qxf2_newsletter_app.git
-
-              # Update the newsletter_automation submodule
-              cd ./qxf2_newsletter_app
-              git checkout modify_relative_path_manifest
-              git pull --recurse-submodules
-              ls -alh ./newsletter_automation
-              cat MANIFEST.in
-
-              # Create a Python Dist
-              pwd
-              python --version
-              python ./setup.py sdist
-              tar -tf ./dist/*.tar.gz
-              #python -m pip install ./dist/*.tar.gz
-
-              # Setup pem key
-              #echo "${{ secrets.KEY }}" > secret.pem
-              #cat secret.pem
-              #chmod 400 secret.pem
-
-              # Copy the Python Dist to the remote server
-              #scp -o StrictHostKeyChecking=no -i secret.pem ./dist/*.tar.gz ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/ubuntu
-
-    #          # Setup pem key
-    #          echo "${{ secrets.KEY }}" > secret.pem
-    #          cat secret.pem
-    #          chmod 400 secret.pem
-
-    #          # Copy the Python Dist to remote server
-    #          scp -o StrictHostKeyChecking=no -i secret.pem ./dist/*.tar.gz "$USERNAME"@"$HOST":/home/ubuntu
+        cd newsletter_automation
+        python ./setup.py sdist
         
-    #- name: Connect to the instance
-    #  run: |
-    #    ssh -i secret.pem ubuntu@15.207.110.45 bash /home/ubuntu/deploy_flask.sh
-    #    ssh -i secret.pem ubuntu@15.207.110.45 bash /home/ubuntu/check_app_status.sh
-
-    # - name: Verify flask app is running
-    #   run: |
-    #     END=$((SECONDS+30))
-    #     while [ $SECONDS -lt $END ]; do
-    #       status = `curl -s -o /dev/null -w "%{http_code}" http://15.207.110.45:8080`
-    #       if [ "$status" -eq 200 ]; then
-    #         STARTED=1;
-    #         echo "Service started successfully";
-    #         break
-    #       fi
-    #       echo "Not started yet"
-    #       sleep 2
-    #     done
-    #     if [ "$STARTED" = ""]; then
-    #       exit 1
-    #   shell: bash
-    # - name: Analysing the code with pylint
-    #   run:
-    #     python -m pylint --fail-under=9 $(git ls-files '*.py')
+    - name: Copy required scripts
+      run: |
+        echo "${{ secrets.CHESS_DB_KEY }}" > secret.pem
+        chmod 400 secret.pem
+        scp -o StrictHostKeyChecking=no -i secret.pem dist/newsletter-automation-0.1-1.tar.gz ubuntu@15.207.110.45:/home/ubuntu
+        scp -o StrictHostKeyChecking=no -i secret.pem requirements.txt ubuntu@15.207.110.45:/home/ubuntu
+        scp -o StrictHostKeyChecking=no -i secret.pem deploy_flask.sh ubuntu@15.207.110.45:/home/ubuntu
+        scp -o StrictHostKeyChecking=no -i secret.pem check_app_status.sh ubuntu@15.207.110.45:/home/ubuntu
+        
+    - name: Connect to the instance and run the scripts
+      run: |
+        ssh -i secret.pem ubuntu@15.207.110.45 bash /home/ubuntu/deploy_flask.sh
+        ssh -i secret.pem ubuntu@15.207.110.45 bash /home/ubuntu/check_app_status.sh
