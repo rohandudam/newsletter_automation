@@ -182,10 +182,13 @@ def create_newsletter():
 @Authentication_Required.requires_auth
 def previewnewsletter(newsletter_id):
     "To populate the preview newsletter page"
-    content =  AddNewsletter.query.with_entities(AddNewsletter.newsletter_id,AddNewsletter.subject,AddNewsletter.opener,AddNewsletter.preview,Article_category.category_name,Articles.title,Articles.url,Articles.description,Articles.time).filter(AddNewsletter.newsletter_id == newsletter_id).join(NewsletterContent, NewsletterContent.newsletter_id==AddNewsletter.newsletter_id).join(Articles, Articles.article_id==NewsletterContent.article_id).join(Article_category, Article_category.category_id == Articles.category_id)
-    only_sub_op_preview=AddNewsletter.query.with_entities(AddNewsletter.newsletter_id,AddNewsletter.subject,AddNewsletter.opener,AddNewsletter.preview).filter(AddNewsletter.newsletter_id == newsletter_id).join(NewsletterContent, NewsletterContent.newsletter_id==AddNewsletter.newsletter_id).join(Articles, Articles.article_id==NewsletterContent.article_id).join(Article_category, Article_category.category_id == Articles.category_id).all()
-    only_one_row = set(only_sub_op_preview)
-    return render_template('preview_newsletter.html',content=content, only_sub_op_preview=only_one_row)
+    try:
+        content =  AddNewsletter.query.with_entities(AddNewsletter.newsletter_id,AddNewsletter.subject,AddNewsletter.opener,AddNewsletter.preview,Article_category.category_name,Articles.title,Articles.url,Articles.description,Articles.time).filter(AddNewsletter.newsletter_id == newsletter_id).join(NewsletterContent, NewsletterContent.newsletter_id==AddNewsletter.newsletter_id).join(Articles, Articles.article_id==NewsletterContent.article_id).join(Article_category, Article_category.category_id == Articles.category_id)
+        only_sub_op_preview=AddNewsletter.query.with_entities(AddNewsletter.newsletter_id,AddNewsletter.subject,AddNewsletter.opener,AddNewsletter.preview).filter(AddNewsletter.newsletter_id == newsletter_id).join(NewsletterContent, NewsletterContent.newsletter_id==AddNewsletter.newsletter_id).join(Articles, Articles.article_id==NewsletterContent.article_id).join(Article_category, Article_category.category_id == Articles.category_id).all()
+        only_one_row = set(only_sub_op_preview)
+        return render_template('preview_newsletter.html',content=content, only_sub_op_preview=only_one_row)
+    except Exception as e:
+        print("Exception in previewnewsletter()",e)
 
 
 @app.route("/create_campaign",methods=["GET","POST"])
@@ -197,64 +200,69 @@ def create_campaign():
     create the newsletter_json needed for mailchimp api
     call mailchimp content setting api
     """
-    newsletter_id_db = db.session.query(NewsletterContent.newsletter_id).order_by(NewsletterContent.newsletter_id.desc()).first()
-    for row in newsletter_id_db:
-        newsletter_id= row
-    content =  AddNewsletter.query.with_entities(AddNewsletter.newsletter_id,AddNewsletter.subject,AddNewsletter.opener,AddNewsletter.preview,Article_category.category_name,Articles.title,Articles.url,Articles.description,Articles.time).join(NewsletterContent, NewsletterContent.newsletter_id==AddNewsletter.newsletter_id).filter_by(newsletter_id=newsletter_id).join(Articles, Articles.article_id==NewsletterContent.article_id).join(Article_category, Article_category.category_id == Articles.category_id)
+    try:
+        newsletter_id_db = db.session.query(NewsletterContent.newsletter_id).order_by(NewsletterContent.newsletter_id.desc()).first()
+        for row in newsletter_id_db:
+            newsletter_id= row
+        content =  AddNewsletter.query.with_entities(AddNewsletter.newsletter_id,AddNewsletter.subject,AddNewsletter.opener,AddNewsletter.preview,Article_category.category_name,Articles.title,Articles.url,Articles.description,Articles.time).join(NewsletterContent, NewsletterContent.newsletter_id==AddNewsletter.newsletter_id).filter_by(newsletter_id=newsletter_id).join(Articles, Articles.article_id==NewsletterContent.article_id).join(Article_category, Article_category.category_id == Articles.category_id)
 
-    result = db.session.execute(content)
+        result = db.session.execute(content)
 
-    newsletter = {'title': '', 'in_this_issue': '','preview':'', 'comic': {'comic_url': '', 'comic_text': ''},
-    'this_week_articles': [],
-    'past_articles':[],
-    'automation_corner':[]}
-    newsletter_json = []
-    for each_element in result:
-        newsletter['title']= each_element.subject +" " + datetime.date.today().strftime('%d-%B-%Y')
-        newsletter['in_this_issue'] = "In this issue "+ each_element.opener
-        newsletter['preview']=each_element.preview
-        if each_element.category_name == 'comic':
-            newsletter['comic']['comic_url']=each_element.url
-            newsletter['comic']['comic_text']= "This is a comic"
-        if each_element.category_name == 'currentweek':
-            newsletter['this_week_articles'].append({'title':each_element['title'], 'url':each_element['url'], 'description':each_element['description'],'reading_time':each_element['time']})
-        if each_element.category_name == 'pastweek':
-            newsletter['past_articles'].append({'title':each_element['title'], 'url':each_element['url'], 'description':each_element['description'],'reading_time':each_element['time']})
-        if each_element.category_name == 'automation corner':
-            newsletter['automation_corner'].append({'title':each_element['title'], 'url':each_element['url'], 'description':each_element['description'],'reading_time':each_element['time']})
+        newsletter = {'title': '', 'in_this_issue': '','preview':'', 'comic': {'comic_url': '', 'comic_text': ''},
+        'this_week_articles': [],
+        'past_articles':[],
+        'automation_corner':[]}
+        newsletter_json = []
+        for each_element in result:
+            newsletter['title']= each_element.subject +" " + datetime.date.today().strftime('%d-%B-%Y')
+            newsletter['in_this_issue'] = "In this issue "+ each_element.opener
+            newsletter['preview']=each_element.preview
+            if each_element.category_name == 'comic':
+                newsletter['comic']['comic_url']=each_element.url
+                newsletter['comic']['comic_text']= "This is a comic"
+            if each_element.category_name == 'currentweek':
+                newsletter['this_week_articles'].append({'title':each_element['title'], 'url':each_element['url'], 'description':each_element['description'],'reading_time':each_element['time']})
+            if each_element.category_name == 'pastweek':
+                newsletter['past_articles'].append({'title':each_element['title'], 'url':each_element['url'], 'description':each_element['description'],'reading_time':each_element['time']})
+            if each_element.category_name == 'automation corner':
+                newsletter['automation_corner'].append({'title':each_element['title'], 'url':each_element['url'], 'description':each_element['description'],'reading_time':each_element['time']})
 
-    add_campaign(newsletter,newsletter_id)
-    flash('Campaign created successfully and loaded with data. Check Mailchimp.','info')
-    #newsletter_json.append(newsletter)
-    jsonfile = 'newsletter.json'
-    with open(jsonfile, "w") as flw:
-        json.dump(newsletter, flw, indent=4)
+        add_campaign(newsletter,newsletter_id)
+        flash('Campaign created successfully and loaded with data. Check Mailchimp.','info')
+        #newsletter_json.append(newsletter)
+        jsonfile = 'newsletter.json'
+        with open(jsonfile, "w") as flw:
+            json.dump(newsletter, flw, indent=4)
 
-        flr = open(jsonfile)
-        return flr.read()
-
-    return(newsletter)
+            flr = open(jsonfile)
+            return flr.read()
+        return(newsletter)
+    except Exception as e:
+        print("Exception while creating campaign",e)
 
 
 def add_campaign(newsletter,newsletter_id):
+    "Method to add campaign details to the template in mailchimp"
+    try:
+        campaign_name=newsletter['title']
+        subject=newsletter['title']
+        preview_text=newsletter['preview']
 
-    campaign_name=newsletter['title']
-    subject=newsletter['title']
-    preview_text=newsletter['preview']
+        #creating campaign here
+        clientobj = mailchimp_helper.Mailchimp_Helper()
+        #print("title,subject,preview",title,subject,preview_text)
+        clientobj.create_campaign(campaign_name,subject,preview_text)
+        campaign_id = clientobj.campaign_id
 
-    #creating campaign here
-    clientobj = mailchimp_helper.Mailchimp_Helper()
-    #print("title,subject,preview",title,subject,preview_text)
-    clientobj.create_campaign(campaign_name,subject,preview_text)
-    campaign_id = clientobj.campaign_id
-
-    newletter_content_object = Newsletter_campaign(campaign_id=campaign_id,newsletter_id=newsletter_id)
-    db.session.add(newletter_content_object)
-    db.session.commit()
+        newletter_content_object = Newsletter_campaign(campaign_id=campaign_id,newsletter_id=newsletter_id)
+        db.session.add(newletter_content_object)
+        db.session.commit()
 
 
-    contentobj = mailchimp_helper.Mailchimp_Helper()
-    contentobj.set_campaign_content(newsletter,campaign_id)
+        contentobj = mailchimp_helper.Mailchimp_Helper()
+        contentobj.set_campaign_content(newsletter,campaign_id)
+    except Exception as e:
+        print("Exception in adding content to campaign",e)
 
 
 @app.route("/url/<category_id>")
