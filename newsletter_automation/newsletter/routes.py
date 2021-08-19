@@ -91,27 +91,12 @@ def logout():
 def index():
     return render_template('home.html')
 
-
-@app.route('/articles', methods=['GET', 'POST'])
-@Authentication_Required.requires_auth
-def articles():
-    "This page adds articles to the database"
+def add_articles():
+    "Adds articles to the database"
     try:
         addarticlesform = AddArticlesForm(request.form)
         category = AddArticlesForm(request.form)
         if request.method == 'POST':
-            if addarticlesform.submit.data:
-                category1 = request.form.get('category_id')
-                if category1 == '1':
-                    pass
-                else:
-                    if not(addarticlesform.description.data):
-                        flash("Please Provide Description")
-                        return render_template('articles.html',addarticlesform=addarticlesform, category=category)
-                    if not (addarticlesform.time.data):
-                        flash("Please Provide Time")
-                        return render_template('articles.html',addarticlesform=addarticlesform, category=category)
-            
             article = Articles(addarticlesform.url.data,addarticlesform.title.data,addarticlesform.description.data, addarticlesform.time.data, addarticlesform.category_id.data.category_id)
             db.session.add(article)
             try:
@@ -130,6 +115,17 @@ def articles():
 
     return render_template('articles.html',addarticlesform=addarticlesform, category=category)
 
+@app.route('/articles', methods=['GET', 'POST'])
+@Authentication_Required.requires_auth
+def articles():
+    """To add articles through pages"""
+    return add_articles()
+
+@app.route('/api/articles', methods=['POST'])
+@Authentication_Required.requires_apikey
+def api_article():
+    """To add articles through api endpoints"""
+    return add_articles()
 
 def add_articles_to_newsletter(subject, opener, preview_text):
     "Adding articles to newsletter"
@@ -214,6 +210,16 @@ def previewnewsletter(newsletter_id):
         app.logger.error(e)
     return render_template('preview_newsletter.html',content=content, only_sub_op_preview=only_one_row)
 
+@app.route('/show-campaign',methods=["GET","POST"])
+@Authentication_Required.requires_auth
+def show_campaign():
+    "To show campaign details in table"
+    campaign_data =  AddNewsletter.query.with_entities(AddNewsletter.newsletter_id,AddNewsletter.subject,AddNewsletter.opener,
+    AddNewsletter.preview,Article_category.category_name,Articles.title,Articles.url,Articles.description,Articles.time)\
+    .filter(AddNewsletter.newsletter_id == Newsletter_campaign.newsletter_id)\
+    .join(NewsletterContent, NewsletterContent.newsletter_id==AddNewsletter.newsletter_id).join(Articles, Articles.article_id==NewsletterContent.article_id).join(Article_category, Article_category.category_id == Articles.category_id)
+    return render_template('show_campaign.html',campaign_data=campaign_data)
+
 
 @app.route("/create_campaign",methods=["GET","POST"])
 @Authentication_Required.requires_auth
@@ -238,12 +244,12 @@ def create_campaign():
         'automation_corner':[]}
         newsletter_json = []
         for each_element in result:
-            newsletter['title']= each_element.subject +" " + datetime.date.today().strftime('%d-%B-%Y')
+            newsletter['title']= each_element.subject
             newsletter['in_this_issue'] = "In this issue "+ each_element.opener
             newsletter['preview']=each_element.preview
             if each_element.category_name == 'comic':
                 newsletter['comic']['comic_url']=each_element.url
-                newsletter['comic']['comic_text']= "This is a comic"
+                newsletter['comic']['comic_text']=each_element['title']
             if each_element.category_name == 'currentweek':
                 newsletter['this_week_articles'].append({'title':each_element['title'], 'url':each_element['url'], 'description':each_element['description'],'reading_time':each_element['time']})
             if each_element.category_name == 'pastweek':
