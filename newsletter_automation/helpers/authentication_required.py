@@ -18,10 +18,12 @@ class Authentication_Required:
                 if current_user:
                     return func(*args, **kwargs)
             except Exception as e:
+                with open('/tmp/error.log','a') as fp:
+                   fp.write(e)
                 return render_template("unauthorized.html")
 
         return decorated
-    
+
     def requires_apikey(func):
         " Decorator function to require API Key "
         @wraps(func)
