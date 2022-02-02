@@ -2,6 +2,7 @@ version: '3.3'
 
 services:
         db:
+                platform: linux/x86_64
                 image: mysql:latest
                 environment:
                         MYSQL_ROOT_PASSWORD: root
@@ -10,10 +11,3 @@ services:
                 cap_add:
                         - SYS_NICE  # CAP_SYS_NICE to fix errors like mbind operation not permitted
 
-        app:
-                network_mode: host
-                depends_on:
-                        - db
-                build:
-                        context: .
-                        dockerfile: Dockerfile
