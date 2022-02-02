@@ -20,3 +20,9 @@ The **Newsletter automation** project helps automate the Newsletter creation pro
   2. Use the same api key for Request headers `'x-api-key': '<YOURAPIKEY>'`
   3. API Endpoint: POST `<base_url>/api/articles`  
   4. Example curl command ` curl -X POST http://localhost:5000/api/articles -H 'X-API-KEY: <YOUR_API_KEY>' -F 'url=http://exampleURL.com' -F 'category_id=2 `
+
+## Setup test environment locally
+  To setup MySQL running locally:
+  1. Run docker-compose up (you will need docker-compose on you local machine)
+  2. Run the create_db.py file, it will create a newsletter automation DB and run an insert statement
+  3. You can now start accessing the MySQL DB on port 3306
